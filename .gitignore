@@ -210,3 +210,25 @@ __marimo__/
 SpaceNet1/
 best_unet.pth
 sam_vit_b_01ec64.pth
+
+# model weights — never commit these
+*.pt
+*.pth
+*.h5
+*.pkl
+
+# raster/geospatial data — too large for GitHub
+*.tif
+*.tiff
+*.geojson
+*.shp
+*.zip
+
+# dataset folders
+data/raw/
+data/processed/
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
