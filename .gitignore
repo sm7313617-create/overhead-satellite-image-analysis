@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+*.pth
+SpaceNet1/
+best_unet.pth
+sam_vit_b_01ec64.pth
+
