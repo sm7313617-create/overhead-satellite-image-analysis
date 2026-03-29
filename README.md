@@ -34,8 +34,8 @@
 
 This project implements and compares multiple deep learning architectures for semantic segmentation of building footprints across two distinct image domains:
 
-- **Phase 1 — Satellite Imagery (`oiu-sd.ipynb`):** Train a custom 8-channel U-Net and fine-tune SAM ViT-B on SpaceNet-1 WorldView-3 multispectral imagery
 - **Phase 1 Evaluation (`spacenet1-unet-sam-3band-evaluation.ipynb`):** Train and benchmark a 3-band U-Net against SAM zero-shot on Kaggle with pre-generated masks, no Google Drive dependency
+- **Phase 1 — Satellite Imagery (`oiu-sd.ipynb`):** Train a custom 8-channel U-Net and fine-tune SAM ViT-B on SpaceNet-1 WorldView-3 multispectral imagery
 - **Phase 2 — Transfer Learning (`oiu-sd.ipynb`):** Apply network surgery to adapt both models from 8-band satellite to 3-band drone imagery, then fine-tune and evaluate alongside YOLOv8-Nano
 
 ---
@@ -154,6 +154,29 @@ Ultralytics YOLOv8-Nano applied to drone imagery as a lightweight comparison bas
 
 ## Pipeline
 
+### Phase 1 Evaluation — `spacenet1-unet-sam-3band-evaluation.ipynb` (3-band)
+
+```
+Kaggle Dataset (3-band RGB + pre-generated masks)
+        │
+        ├─► Dynamic Path Discovery (handles split zip folders)
+        │
+        ├─► Dataset Exploration & Visualisation
+        │
+        ├─► SpaceNetDataset + DataLoaders (Albumentations augmentation)
+        │
+        ├─► U-Net (3ch) Training (BCEDiceLoss, DataParallel, auto-resume)
+        │
+        ├─► Full Evaluation
+        │        ├─ Loss & IoU curves
+        │        ├─ Pixel-level: IoU / Precision / Recall / F1
+        │        ├─ Confusion matrix
+        │        ├─ Per-image IoU distribution
+        │        └─ Prediction grid + polygon overlay (OpenCV)
+        │
+        └─► SAM Zero-Shot Inference & U-Net vs SAM Comparison
+```
+
 ### Phase 1 — SpaceNet-1 · `oiu-sd.ipynb` (8-band)
 
 ```
@@ -180,29 +203,6 @@ Raw 8-band GeoTIFFs + GeoJSON annotations
         │        └─ Mask decoder only
         │
         └─► SAM Evaluation + Confusion Matrices
-```
-
-### Phase 1 Evaluation — `spacenet1-unet-sam-3band-evaluation.ipynb` (3-band)
-
-```
-Kaggle Dataset (3-band RGB + pre-generated masks)
-        │
-        ├─► Dynamic Path Discovery (handles split zip folders)
-        │
-        ├─► Dataset Exploration & Visualisation
-        │
-        ├─► SpaceNetDataset + DataLoaders (Albumentations augmentation)
-        │
-        ├─► U-Net (3ch) Training (BCEDiceLoss, DataParallel, auto-resume)
-        │
-        ├─► Full Evaluation
-        │        ├─ Loss & IoU curves
-        │        ├─ Pixel-level: IoU / Precision / Recall / F1
-        │        ├─ Confusion matrix
-        │        ├─ Per-image IoU distribution
-        │        └─ Prediction grid + polygon overlay (OpenCV)
-        │
-        └─► SAM Zero-Shot Inference & U-Net vs SAM Comparison
 ```
 
 ### Phase 2 — Svamitva Drone · `oiu-sd.ipynb` (Transfer Learning)
@@ -235,6 +235,17 @@ Pre-trained 8-band U-Net + SAM (Phase 1 checkpoints)
 
 ## Results
 
+### Phase 1 — SpaceNet-1 · 3-band (`spacenet1-unet-sam-3band-evaluation.ipynb`)
+
+Evaluated on the SpaceNet-1 validation set using 3-band RGB imagery with pre-generated masks.
+
+| Model | Mean IoU | F1 Score | Precision | Recall |
+|---|---|---|---|---|
+| SAM ViT-B (zero-shot) | ~0.10 | — | — | — |
+| **U-Net (3-band, trained)** | **0.631** | **0.724** | 0.601 | 0.910 |
+
+---
+
 ### Phase 1 — SpaceNet-1 · 8-band (`oiu-sd.ipynb`)
 
 Evaluated on the SpaceNet-1 test set using 8-band WorldView-3 multispectral imagery.
@@ -246,17 +257,6 @@ Evaluated on the SpaceNet-1 test set using 8-band WorldView-3 multispectral imag
 | SAM ViT-B (fine-tuned) | 0.4355 | 0.4755 | 0.8375 | 0.4560 |
 
 > SAM zero-shot achieves near-perfect recall but extremely low precision — it over-segments everything. The trained U-Net is the strongest performer on Phase 1. Fine-tuned SAM improves substantially over zero-shot but still trails U-Net on IoU and F1.
-
----
-
-### Phase 1 — SpaceNet-1 · 3-band (`spacenet1-unet-sam-3band-evaluation.ipynb`)
-
-Evaluated on the SpaceNet-1 validation set using 3-band RGB imagery with pre-generated masks.
-
-| Model | Mean IoU | F1 Score | Precision | Recall |
-|---|---|---|---|---|
-| SAM ViT-B (zero-shot) | ~0.10 | — | — | — |
-| **U-Net (3-band, trained)** | **0.631** | **0.724** | 0.601 | 0.910 |
 
 ---
 
