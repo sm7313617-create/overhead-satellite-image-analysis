@@ -34,8 +34,8 @@
 
 This project implements and compares multiple deep learning architectures for semantic segmentation of building footprints across two distinct image domains:
 
-- **Phase 1 — Satellite Imagery (`oiu-sd.ipynb`):** Train a custom 8-channel U-Net and fine-tune SAM ViT-B on SpaceNet-1 WorldView-3 multispectral imagery
 - **Phase 1 Evaluation (`spacenet1-unet-sam-3band-evaluation.ipynb`):** Train and benchmark a 3-band U-Net against SAM zero-shot on Kaggle with pre-generated masks, no Google Drive dependency
+- **Phase 1 — Satellite Imagery (`oiu-sd.ipynb`):** Train a custom 8-channel U-Net and fine-tune SAM ViT-B on SpaceNet-1 WorldView-3 multispectral imagery
 - **Phase 2 — Transfer Learning (`oiu-sd.ipynb`):** Apply network surgery to adapt both models from 8-band satellite to 3-band drone imagery, then fine-tune and evaluate alongside YOLOv8-Nano
 
 ---
@@ -154,6 +154,29 @@ Ultralytics YOLOv8-Nano applied to drone imagery as a lightweight comparison bas
 
 ## Pipeline
 
+### Phase 1 Evaluation — `spacenet1-unet-sam-3band-evaluation.ipynb` (3-band)
+
+```
+Kaggle Dataset (3-band RGB + pre-generated masks)
+        │
+        ├─► Dynamic Path Discovery (handles split zip folders)
+        │
+        ├─► Dataset Exploration & Visualisation
+        │
+        ├─► SpaceNetDataset + DataLoaders (Albumentations augmentation)
+        │
+        ├─► U-Net (3ch) Training (BCEDiceLoss, DataParallel, auto-resume)
+        │
+        ├─► Full Evaluation
+        │        ├─ Loss & IoU curves
+        │        ├─ Pixel-level: IoU / Precision / Recall / F1
+        │        ├─ Confusion matrix
+        │        ├─ Per-image IoU distribution
+        │        └─ Prediction grid + polygon overlay (OpenCV)
+        │
+        └─► SAM Zero-Shot Inference & U-Net vs SAM Comparison
+```
+
 ### Phase 1 — SpaceNet-1 · `oiu-sd.ipynb` (8-band)
 
 ```
@@ -180,29 +203,6 @@ Raw 8-band GeoTIFFs + GeoJSON annotations
         │        └─ Mask decoder only
         │
         └─► SAM Evaluation + Confusion Matrices
-```
-
-### Phase 1 Evaluation — `spacenet1-unet-sam-3band-evaluation.ipynb` (3-band)
-
-```
-Kaggle Dataset (3-band RGB + pre-generated masks)
-        │
-        ├─► Dynamic Path Discovery (handles split zip folders)
-        │
-        ├─► Dataset Exploration & Visualisation
-        │
-        ├─► SpaceNetDataset + DataLoaders (Albumentations augmentation)
-        │
-        ├─► U-Net (3ch) Training (BCEDiceLoss, DataParallel, auto-resume)
-        │
-        ├─► Full Evaluation
-        │        ├─ Loss & IoU curves
-        │        ├─ Pixel-level: IoU / Precision / Recall / F1
-        │        ├─ Confusion matrix
-        │        ├─ Per-image IoU distribution
-        │        └─ Prediction grid + polygon overlay (OpenCV)
-        │
-        └─► SAM Zero-Shot Inference & U-Net vs SAM Comparison
 ```
 
 ### Phase 2 — Svamitva Drone · `oiu-sd.ipynb` (Transfer Learning)
@@ -235,89 +235,28 @@ Pre-trained 8-band U-Net + SAM (Phase 1 checkpoints)
 
 ## Results
 
----
-
-### Phase 1 — SpaceNet-1 · 8-band (`oiu-sd.ipynb`)
-
-Evaluated on the SpaceNet-1 test set using 8-band WorldView-3 multispectral imagery.
-
-#### Sample 8-band Tile & Generated Mask
-<p align="center">
-  <img src="phase1_sample_8band.png" width="80%"/>
-</p>
-
-#### Model Metrics
-
-| Model | Mean IoU | F1 / Dice | Precision | Recall |
-|---|---|---|---|---|
-| SAM ViT-B (zero-shot) | 0.0658 | 0.1235 | 0.0661 | 0.9394 |
-| SAM ViT-B (fine-tuned) | 0.4355 | 0.4755 | 0.8375 | 0.4560 |
-| **U-Net (8-band, trained)** | **0.6126** | **0.7029** | **0.8358** | **0.6805** |
-
-> SAM zero-shot achieves near-perfect recall but extremely low precision — it over-segments everything. The trained U-Net is the strongest performer on Phase 1. Fine-tuned SAM improves substantially over zero-shot but still trails U-Net on IoU and F1.
-
-#### SAM Zero-Shot Segmentation
-<p align="center">
-  <img src="phase1_sam_zeroshot.png" width="80%"/>
-</p>
-
-#### U-Net Predictions vs Ground Truth
-<p align="center">
-  <img src="phase1_unet_predictions.png" width="80%"/>
-</p>
-
-#### SAM Fine-tuned Predictions vs Ground Truth
-<p align="center">
-  <img src="phase1_sam_finetuned.png" width="80%"/>
-</p>
-
----
-
 ### Phase 1 — SpaceNet-1 · 3-band (`spacenet1-unet-sam-3band-evaluation.ipynb`)
 
 Evaluated on the SpaceNet-1 validation set using 3-band RGB imagery with pre-generated masks.
-
-#### Sample RGB Tile & Mask
-<p align="center">
-  <img src="eval_sample_tile.png" width="80%"/>
-</p>
-
-#### Model Metrics
 
 | Model | Mean IoU | F1 Score | Precision | Recall |
 |---|---|---|---|---|
 | SAM ViT-B (zero-shot) | ~0.10 | — | — | — |
 | **U-Net (3-band, trained)** | **0.631** | **0.724** | 0.601 | 0.910 |
 
-#### Training — Loss & IoU Curves
-<p align="center">
-  <img src="eval_loss_curves.png" width="80%"/>
-</p>
+---
 
-#### U-Net Prediction Grid (RGB · Ground Truth · Predicted)
-<p align="center">
-  <img src="eval_predictions_grid.png" width="80%"/>
-</p>
+### Phase 1 — SpaceNet-1 · 8-band (`oiu-sd.ipynb`)
 
-#### U-Net Confusion Matrix
-<p align="center">
-  <img src="eval_confusion_matrix.png" width="70%"/>
-</p>
+Evaluated on the SpaceNet-1 test set using 8-band WorldView-3 multispectral imagery.
 
-#### Per-Image IoU Distribution — U-Net
-<p align="center">
-  <img src="eval_iou_distribution.png" width="70%"/>
-</p>
+| Model | Mean IoU | F1 / Dice | Precision | Recall |
+|---|---|---|---|---|
+| SAM ViT-B (zero-shot) | 0.0658 | 0.1235 | 0.0661 | 0.9394 |
+| **U-Net (8-band, trained)** | **0.6126** | **0.7029** | **0.8358** | **0.6805** |
+| SAM ViT-B (fine-tuned) | 0.4355 | 0.4755 | 0.8375 | 0.4560 |
 
-#### Per-Image IoU Distribution — SAM Zero-Shot
-<p align="center">
-  <img src="eval_sam_iou_dist.png" width="70%"/>
-</p>
-
-#### U-Net vs SAM — Metric Comparison
-<p align="center">
-  <img src="eval_unet_vs_sam.png" width="70%"/>
-</p>
+> SAM zero-shot achieves near-perfect recall but extremely low precision — it over-segments everything. The trained U-Net is the strongest performer on Phase 1. Fine-tuned SAM improves substantially over zero-shot but still trails U-Net on IoU and F1.
 
 ---
 
@@ -325,21 +264,14 @@ Evaluated on the SpaceNet-1 validation set using 3-band RGB imagery with pre-gen
 
 Evaluated pixel-level on Indian drone imagery after cross-domain transfer learning. All models adapted via network surgery (8-band → 3-band) and fine-tuned on the Svamitva dataset.
 
-#### Sample Drone Images & Masks
-<p align="center">
-  <img src="phase2_drone_samples.png" width="80%"/>
-</p>
-
-#### Model Metrics
-
 | Model | Overall Accuracy | Building Precision | Building Recall | Notes |
 |---|---|---|---|---|
 | **U-Net (fine-tuned)** | **0.92** | **0.91** | **0.89** | Best overall performance |
 | U-Net + OpenCV Pipeline | 0.91 | 0.89 | 0.88 | Polygon regularisation post-processing |
-| YOLOv8-Nano | 0.86 | 0.86 | 0.76 | Highest building precision after U-Net |
 | SAM ViT-B (fine-tuned) | 0.84 | 0.78 | 0.85 | Micro-batched fine-tuning |
+| YOLOv8-Nano | 0.86 | 0.86 | 0.76 | Highest building precision after U-Net |
 
-#### Pixel-Level Confusion Matrix Summary
+#### Phase 2 Confusion Matrix Summary (pixel-level)
 
 | Model | TN | FP | FN | TP |
 |---|---|---|---|---|
@@ -348,35 +280,7 @@ Evaluated pixel-level on Indian drone imagery after cross-domain transfer learni
 | SAM ViT-B (fine-tuned) | 38,894,930 | 7,456,257 | 4,623,793 | 25,825,020 |
 | YOLOv8-Nano | 42,690,745 | 3,630,954 | 7,291,282 | 23,187,019 |
 
-#### U-Net Predictions on Drone Data
-<p align="center">
-  <img src="phase2_unet_predictions.png" width="80%"/>
-</p>
-
-#### U-Net Confusion Matrix (Phase 2)
-<p align="center">
-  <img src="phase2_unet_confusion.png" width="70%"/>
-</p>
-
-#### U-Net + OpenCV Pipeline Confusion Matrix
-<p align="center">
-  <img src="phase2_pipeline_confusion.png" width="70%"/>
-</p>
-
-#### SAM Fine-tuned Predictions on Drone Data
-<p align="center">
-  <img src="phase2_sam_confusion.png" width="70%"/>
-</p>
-
-#### YOLOv8-Nano Predictions on Drone Data
-<p align="center">
-  <img src="phase2_yolo_predictions.png" width="80%"/>
-</p>
-
-#### YOLOv8-Nano Confusion Matrix
-<p align="center">
-  <img src="phase2_yolo_confusion.png" width="70%"/>
-</p>
+> Full loss curves, per-image IoU distributions, and visual prediction grids are generated inline in the notebooks.
 
 ---
 
@@ -419,7 +323,7 @@ urllib.request.urlretrieve(
 
 ## Notebook Walkthroughs
 
-### `spacenet1-unet-sam-3band-evaluation.ipynb`
+### `spacenet1-unet-sam-3band-evaluation.ipynb` — Phase 1 (SpaceNet-1, 3-band)
 
 | Step | Description |
 |---|---|
@@ -522,8 +426,8 @@ urllib.request.urlretrieve(
 
 | GitHub | Name |
 |---|---|
-| [@sm7313617-create](https://github.com/sm7313617-create) | Sayan Mondal |
 | [@IshanGain](https://github.com/IshanGain) | Ishan Gain |
+| [@sm7313617-create](https://github.com/sm7313617-create) | Sayan Mondal |
 | [@Arka007-hustle](https://github.com/Arka007-hustle) | Pranjal Basu |
 
 ---
