@@ -259,32 +259,32 @@ Evaluated on the SpaceNet-1 validation set using 3-band RGB imagery with pre-gen
 
 #### Training — Loss & IoU Curves
 <p align="center">
-  <img src="eval_loss_curves.png" width="80%"/>
+  <img src="assets/eval_loss_curves.png" width="80%"/>
 </p>
 
 #### U-Net Prediction Grid (RGB · Ground Truth · Predicted)
 <p align="center">
-  <img src="eval_predictions_grid.png" width="80%"/>
+  <img src="assets/eval_predictions_grid.png" width="80%"/>
 </p>
 
 #### U-Net Confusion Matrix
 <p align="center">
-  <img src="eval_confusion_matrix.png" width="70%"/>
+  <img src="assets/eval_confusion_matrix.png" width="70%"/>
 </p>
 
 #### Per-Image IoU Distribution — U-Net
 <p align="center">
-  <img src="eval_iou_distribution.png" width="70%"/>
+  <img src="assets/eval_iou_distribution.png" width="70%"/>
 </p>
 
 #### Per-Image IoU Distribution — SAM Zero-Shot
 <p align="center">
-  <img src="eval_sam_iou_dist.png" width="70%"/>
+  <img src="assets/eval_sam_iou_dist.png" width="70%"/>
 </p>
 
 #### U-Net vs SAM — Metric Comparison
 <p align="center">
-  <img src="eval_unet_vs_sam.png" width="70%"/>
+  <img src="assets/eval_unet_vs_sam.png" width="70%"/>
 </p>
 
 ---
@@ -295,7 +295,7 @@ Evaluated on the SpaceNet-1 test set using 8-band WorldView-3 multispectral imag
 
 #### Sample 8-band Tile & Generated Mask
 <p align="center">
-  <img src="phase1_sample_8band.png" width="80%"/>
+  <img src="assets/phase1_sample_8band.png" width="80%"/>
 </p>
 
 #### Model Metrics
@@ -310,17 +310,17 @@ Evaluated on the SpaceNet-1 test set using 8-band WorldView-3 multispectral imag
 
 #### SAM Zero-Shot Segmentation
 <p align="center">
-  <img src="phase1_sam_zeroshot.png" width="80%"/>
+  <img src="assets/phase1_sam_zeroshot.png" width="80%"/>
 </p>
 
 #### U-Net Predictions vs Ground Truth
 <p align="center">
-  <img src="phase1_unet_predictions.png" width="80%"/>
+  <img src="assets/phase1_unet_predictions.png" width="80%"/>
 </p>
 
 #### SAM Fine-tuned Predictions vs Ground Truth
 <p align="center">
-  <img src="phase1_sam_finetuned.png" width="80%"/>
+  <img src="assets/phase1_sam_finetuned.png" width="80%"/>
 </p>
 
 ---
@@ -331,7 +331,7 @@ Evaluated pixel-level on Indian drone imagery after cross-domain transfer learni
 
 #### Sample Drone Images & Masks
 <p align="center">
-  <img src="phase2_drone_samples.png" width="80%"/>
+  <img src="assets/phase2_drone_samples.png" width="80%"/>
 </p>
 
 #### Model Metrics
@@ -354,32 +354,32 @@ Evaluated pixel-level on Indian drone imagery after cross-domain transfer learni
 
 #### U-Net Predictions on Drone Data
 <p align="center">
-  <img src="phase2_unet_predictions.png" width="80%"/>
+  <img src="assets/phase2_unet_predictions.png" width="80%"/>
 </p>
 
 #### U-Net Confusion Matrix (Phase 2)
 <p align="center">
-  <img src="phase2_unet_confusion.png" width="70%"/>
+  <img src="assets/phase2_unet_confusion.png" width="70%"/>
 </p>
 
 #### U-Net + OpenCV Pipeline Confusion Matrix
 <p align="center">
-  <img src="phase2_pipeline_confusion.png" width="70%"/>
+  <img src="assets/phase2_pipeline_confusion.png" width="70%"/>
 </p>
 
 #### SAM Fine-tuned Predictions on Drone Data
 <p align="center">
-  <img src="phase2_sam_confusion.png" width="70%"/>
+  <img src="assets/phase2_sam_confusion.png" width="70%"/>
 </p>
 
 #### YOLOv8-Nano Predictions on Drone Data
 <p align="center">
-  <img src="phase2_yolo_predictions.png" width="80%"/>
+  <img src="assets/phase2_yolo_predictions.png" width="80%"/>
 </p>
 
 #### YOLOv8-Nano Confusion Matrix
 <p align="center">
-  <img src="phase2_yolo_confusion.png" width="70%"/>
+  <img src="assets/phase2_yolo_confusion.png" width="70%"/>
 </p>
 
 ---
